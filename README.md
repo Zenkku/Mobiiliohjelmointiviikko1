@@ -1,4 +1,6 @@
-# Android Task App (Week 2)
+# Android Task App (Week 2) 
+
+#TEHTÄVÄ LÖYTYY VIIKKO1TEHTV SISÄLTÄ
 
 Tämä projekti on mobiiliohjelmoinnin kurssin harjoitustyö, jota laajennetaan viikoittain.
 
