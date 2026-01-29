@@ -1,38 +1,57 @@
-# Android Task App (Week 2) 
-
 #TEHTÄVÄ LÖYTYY TAG WEEK22 TAKANTA VIIKKO1TEHTV SISÄLTÄ
 
-Tämä projekti on mobiiliohjelmoinnin kurssin harjoitustyö, jota laajennetaan viikoittain.
+Android Task App (Week 3)
+Tämä projekti on mobiiliohjelmoinnin kurssin harjoitustyö, jota laajennetaan viikoittain. Sovellus on "To-Do List" -tyyppinen tehtävälista, joka on toteutettu moderneilla Android-työkaluilla (Kotlin & Jetpack Compose).
 
-## 📅 Viikko 2: MVVM, ViewModel ja State
+📅 Viikko 3: MVVM-rakenne, StateFlow ja Dialogit
+Kolmannella viikolla projekti laajennettiin noudattamaan puhdasta MVVM-arkkitehtuuria ja koodi organisoitiin omiin paketteihinsa. Käyttöliittymään lisättiin muokkausnäkymä dialogina.
 
-Toisella viikolla projekti laajennettiin käyttämään **MVVM-arkkitehtuuria** (Model-View-ViewModel) ja dynaamisempaa käyttöliittymää. Sovelluksen visuaalinen ilme päivitettiin **vaaleanpunaiseksi teemaksi**.
+🚀 Uudet ominaisuudet
+Kerrosrakenne: Koodi on jaettu selkeästi paketteihin: model, view ja viewmodel.
 
-### 🚀 Uudet ominaisuudet
-* **ViewModel:** Sovelluslogiikka on siirretty `TaskViewModel`-luokkaan.
-* **LazyColumn:** Tehtävät näytetään suorituskykyisessä listassa.
-* **Interaktiivisuus:**
-    * Uuden tehtävän lisääminen (TextField + Button).
-    * Tehtävän merkintä tehdyksi (Checkbox).
-    * Tehtävän poistaminen listalta.
-* **Logiikka:** Lajittelu (`sortByDueDate`) ja suodatus (`filterByDone`) toimivat nyt ViewModelin kautta.
+DetailScreen (Dialog): Tehtävää klikkaamalla aukeaa dialogi, jossa tehtävää voi muokata tai sen voi poistaa. Erillistä navigaatiota ei tarvita.
 
-### 🧠 Tekninen toteutus: Compose-tilanhallinta
+Reaktiivisuus: Käyttöliittymä reagoi välittömästi ViewModelin tilan muutoksiin StateFlow:n avulla.
 
-Tässä vaiheessa siirryttiin `remember`-muuttujista keskitettyyn tilanhallintaan.
+🧠 Tekninen toteutus
+MVVM (Model-View-ViewModel) Composessa
+Tällä viikolla arkkitehtuuri eriytettiin selkeästi. Miksi MVVM on hyödyllinen?
 
-**Miten Compose-tilanhallinta toimii?**
-Jetpack Compose on reaktiivinen: kun data (State) muuttuu, käyttöliittymä piirretään automaattisesti uudelleen (*recomposition*). UI tarkkailee ViewModelissa olevaa tilaa (esim. `MutableState<List<Task>>`), ja kun listaan lisätään alkio, näkymä päivittyy ilman manuaalista kutsua.
+Vastuiden erottelu (Separation of Concerns): UI (View) vastaa vain piirtämisestä, kun taas logiikka ja tilanhallinta ovat ViewModelissa. Tämä pitää koodin siistinä.
 
-**Miksi ViewModel on parempi kuin pelkkä `remember`?**
-1.  **Elinkaari (Lifecycle):** `remember` pitää tiedon tallessa vain niin kauan kuin komponentti on ruudulla. ViewModel säilyy muistissa myös konfiguraatiomuutosten (kuten näytön kääntämisen) yli, joten käyttäjän syöttämä data ei katoa.
-2.  **Koodin vastuut:** ViewModel erottaa bisneslogiikan (kuten tietokantakutsut tai datan käsittelyn) käyttöliittymäkoodista (UI). Tämä tekee koodista selkeämpää ja helpommin testattavaa.
+Testattavuus: ViewModelia voidaan testata ilman emulaattoria tai UI-elementtejä.
 
----
+Elinkaari (Lifecycle): ViewModel säilyy hengissä, vaikka laitetta käännetään (screen rotation), jolloin käyttäjän syöttämä data ei katoa. Composessa tämä on kriittistä, koska UI piirretään uudelleen (recomposition) usein.
 
-## 📅 Viikko 1: Kotlin-perusteet ja Compose (Historia)
+Miten StateFlow toimii?
+Viikolla 3 otettiin käyttöön StateFlow (tai MutableState) tilanhallinnassa.
 
+StateFlow on Kotlinin Coroutines-kirjaston osa, joka toimii "kuumana virtana" (hot stream). Se pitää sisällään aina viimeisimmän tilan.
+
+Käyttöliittymässä (UI) tilaa kuunnellaan collectAsState()-funktiolla.
+
+Kun ViewModel päivittää listaa (esim. addTask), StateFlow lähettää tiedon automaattisesti kaikille kuuntelijoille, ja Compose päivittää vain ne osat ruudusta, jotka muuttuivat.
+
+📅 Viikko 2: Ensimmäinen ViewModel ja State
+Toisella viikolla projekti laajennettiin käyttämään alustavaa MVVM-mallia ja dynaamisempaa käyttöliittymää. Sovelluksen visuaalinen ilme päivitettiin vaaleanpunaiseksi teemaksi.
+
+Ominaisuudet
+ViewModel: Sovelluslogiikka siirrettiin TaskViewModel-luokkaan.
+
+LazyColumn: Tehtävät näytetään suorituskykyisessä listassa.
+
+Interaktiivisuus: Uuden tehtävän lisääminen, merkintä tehdyksi ja poistaminen.
+
+Logiikka: Lajittelu (sortByDueDate) ja suodatus (filterByDone) ViewModelin kautta.
+
+Compose-tilanhallinta
+Tässä vaiheessa siirryttiin remember-muuttujista keskitettyyn tilanhallintaan. Jetpack Compose on reaktiivinen: kun data (State) muuttuu, käyttöliittymä piirretään automaattisesti uudelleen.
+
+📅 Viikko 1: Kotlin-perusteet ja Compose (Historia)
 Ensimmäisellä viikolla harjoiteltiin Kotlinin perusteita ja projektin pystytystä.
-* **Opittiin:** Luomaan `data class`, käsittelemään listoja ja rakentamaan ensimmäinen `Column`-pohjainen UI.
-* **Logiikka:** Toteutettiin perusfunktiot (`addTask`, `toggleDone`, `filterByDone`, `sortByDueDate`).
-* **UI:** Yksinkertainen `HomeScreen`, joka listasi mock-datan tekstiriveinä.
+
+Opittiin: Luomaan data class, käsittelemään listoja ja rakentamaan ensimmäinen Column-pohjainen UI.
+
+Logiikka: Toteutettiin perusfunktiot (addTask, toggleDone, filterByDone, sortByDueDate).
+
+UI: Yksinkertainen HomeScreen, joka listasi mock-datan tekstiriveinä.
