@@ -3,6 +3,25 @@
 Android Task App (Week 3)
 Tämä projekti on mobiiliohjelmoinnin kurssin harjoitustyö, jota laajennetaan viikoittain. Sovellus on "To-Do List" -tyyppinen tehtävälista, joka on toteutettu moderneilla Android-työkaluilla (Kotlin & Jetpack Compose).
 
+📅 Viikko 4: Navigointi ja Kalenterinäkymä Neljännellä viikolla sovellus muutettiin tukemaan useampaa näkymää hyödyntämällä Jetpack Navigation -kirjastoa. Sovellukseen luotiin uusi kalenterinäkymä tehtävien tarkasteluun.
+
+🚀 Uudet ominaisuudet
+
+Navigointi: Sovelluksessa on nyt selkeä siirtyminen listanäkymän (HomeScreen) ja kalenterinäkymän (CalendarScreen) välillä.
+
+CalendarScreen: Tehtävät näytetään ryhmiteltynä päivämäärän (dueDate) mukaan, jolloin käyttäjä hahmottaa aikataulun paremmin.
+
+Jaettu tila: Muokkaukset päivittyvät reaaliajassa molempiin näkymiin.
+
+🧠 Tekninen toteutus
+
+Navigation Compose (Single-Activity): NavHost ja NavController hallitsevat reittejä (routes), jolloin siirtymät ovat sujuvia ilman useita Activityjä.
+
+Jaettu ViewModel: Sama TaskViewModel-instanssi jaetaan navigaation kautta molemmille näkymille. Tämä takaa sen, että StateFlow pitää datan synkronoituna: kun tehtävä lisätään "Home"-ruudussa, se näkyy heti myös "Calendar"-ruudussa.
+
+Dialogit: Lisäys ja muokkaus (AlertDialog) on pidetty erillään navigaatiosta, jotta ne toimivat identtisesti molemmissa näkymissä.
+
+
 📅 Viikko 3: MVVM-rakenne, StateFlow ja Dialogit
 Kolmannella viikolla projekti laajennettiin noudattamaan puhdasta MVVM-arkkitehtuuria ja koodi organisoitiin omiin paketteihinsa. Käyttöliittymään lisättiin muokkausnäkymä dialogina.
 
