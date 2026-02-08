@@ -1,5 +1,5 @@
-package com.example.viikko1tehtv.screens
-
+package com.example.viikko1tehtv.view
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,65 +7,58 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.viikko1tehtv.domain.Task
 import com.example.viikko1tehtv.viewModel.TaskViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: TaskViewModel = viewModel()) {
-    var newTaskTitle by remember { mutableStateOf(value = "") }
+fun HomeScreen(
+    viewModel: TaskViewModel,
+    onNavigationToCaledar: () -> Unit = {},
+    onNavigationToSettings: () -> Unit = {}
+) {
+    val tasks by viewModel.task.collectAsState()
+    val selectedTask by viewModel.selectedTask.collectAsState()
+    var showAddDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(all = 16.dp)) {
-        Text(text = "Tehtavalista", style = MaterialTheme.typography.headlineMedium)
+        TopAppBar(
+            title = { Text(text = "Tehtävalista") },
+            actions = {
+                IconButton(onClick = { showAddDialog = true }) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                }
+                IconButton(onClick = onNavigationToCaledar) {
+                    Icon(imageVector = Icons.Default.CalendarMonth, contentDescription = "Calendar")
+                }
+                IconButton(onClick = onNavigationToSettings) {
+                    Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+                }
+            }
+        )
 
         Spacer(modifier = Modifier.height(height = 16.dp))
-
-
-        Row {
-            TextField(
-                value = newTaskTitle,
-                onValueChange = { newTaskTitle = it },
-                label = { Text(text = "Uusi Tehtava") },
-                modifier = Modifier.weight(weight = 1f)
-            )
-
-            Spacer(modifier = Modifier.width(width = 8.dp))
-            Button(onClick = {
-                if (newTaskTitle.isNotBlank()) {
-                    viewModel.addTask(
-                        Task(
-                            id = viewModel.tasks.size + 1,
-                            title = newTaskTitle,
-                            description = "Added from button",
-                            priority = 1,
-                            dueDate = "2026-01-10",
-                            done = false
-                        )
-                    )
-                    newTaskTitle = ""
-                }
-            }) { Text(text = "Lisää uusi") }
-
-
-        }
-
-        Spacer(modifier = Modifier.height(height = 8.dp))
 
         Button(onClick = { viewModel.sortbyDueDate() }) {
             Text(text = "Järjestä päivämäärän mukaan")
@@ -73,7 +66,6 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(height = 8.dp))
 
-        // Suodatusnapit
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -91,12 +83,13 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(height = 16.dp))
 
-        LazyColumn() {
-            items(items = viewModel.tasks) { task ->
+        LazyColumn {
+            items(items = tasks) { task ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 8.dp),
+                        .padding(all = 8.dp)
+                        .clickable { viewModel.selectTask(task) },
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Checkbox(
@@ -112,5 +105,23 @@ fun HomeScreen(viewModel: TaskViewModel = viewModel()) {
                 }
             }
         }
+    }
+
+    if (selectedTask != null) {
+        DetailDialog(
+            task = selectedTask!!,
+            onClose = { viewModel.closeDialog() },
+            onUpdate = { viewModel.updateTask(it) }
+        )
+    }
+
+    if (showAddDialog) {
+        AddDialog(
+            onClose = { showAddDialog = false },
+            onAddTask = { title, description, dueDate ->
+                viewModel.addTask(title, description, dueDate)
+                showAddDialog = false
+            }
+        )
     }
 }
