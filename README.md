@@ -1,4 +1,4 @@
-#TEHTÄVÄ LÖYTYY  VIIKKO1TEHTV SISÄLTÄ
+#TEHTÄVÄ LÖYTYY  VIIKKO1TEHTV SISÄLTÄ  ja video: https://youtu.be/Lclyxbaev2Q
 
 Android Task App (Week 3)
 Tämä projekti on mobiiliohjelmoinnin kurssin harjoitustyö, jota laajennetaan viikoittain. Sovellus on "To-Do List" -tyyppinen tehtävälista, joka on toteutettu moderneilla Android-työkaluilla (Kotlin & Jetpack Compose).
